@@ -1,0 +1,12 @@
+package-as: PUtils
+enable-nolib-creation: yes
+enable-toc-creation: no
+
+ignore:
+    - .git
+    - .gitignore
+    - .vscode
+    - local_development
+    - .gitignore
+    - LFGAnnouncements.code-workspace
+    - TODO.txt
