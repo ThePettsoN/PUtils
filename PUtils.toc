@@ -1,0 +1,16 @@
+## Interface: 11501
+## Interface-Classic: 11501
+## Interface-BCC: 20504
+## Interface-Wrath: 30403
+## Title: PUtils
+## Author: ThePettsoN
+## Version: @project-version@
+## DefaultState: Enabled
+## LoadOnDemand: 0
+
+src/core.lua
+src/table.lua
+
+src/debug.lua
+src/game.lua
+src/string.lua
