@@ -14,6 +14,7 @@ local Severities = {
     Warning = 3,
     Error = 4,
 }
+DebugUtils.Severities = Severities
 
 local function printMessage(moduleName, color, severity, msg, ...)
     print(string.format("[%s]|c%s[%s] %s|r", moduleName, color, severity, string.format(msg, ...)))
@@ -42,6 +43,8 @@ do
         module.warning = DebugUtils.warning
         module.error = DebugUtils.error
         module.printf = function(self, string, ...) Utils.string.printf(string, ...) end
+        module.setSeverity = DebugUtils.setSeverity
+        module.getSeverity = DebugUtils.getSeverity
     end
 end
 
@@ -51,7 +54,11 @@ DebugUtils.setSeverity = function(self, severity)
         return
     end
 
-    Modules.__putils_debug.severity = newSeverity
+    self.__putils_debug.severity = newSeverity
+end
+
+DebugUtils.getSeverity = function(self, severity)
+    return self.__putils_debug.severity
 end
 
 DebugUtils.debug = function(self, s, ...)
