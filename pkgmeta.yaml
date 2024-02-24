@@ -10,3 +10,4 @@ ignore:
     - .gitignore
     - LFGAnnouncements.code-workspace
     - TODO.txt
+    - PUtils.toc
