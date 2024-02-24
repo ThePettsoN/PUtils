@@ -22,7 +22,7 @@ TableUtils.mergeRecursive = function(dest, source)
 		if isTable and v[1] and type(dest[k]) == "table" and dest[k][1] then -- Stupid check that assumes that all tables where index 1 exists in both dest and source are arrays.
 			TableUtils.mergeArray(dest[k], v)
 		elseif isTable and type(dest[k]) == "table" then
-			Table.mergeRecursive(dest[k], v)
+			TableUtils.mergeRecursive(dest[k], v)
 		elseif isTable then
 			dest[k] = CopyTable(v)
 		else
