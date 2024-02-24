@@ -3,6 +3,7 @@ local Utils = LibStub:GetLibrary(PUtils.MAJOR_VERSION)
 
 -- Lua APIs
 local stringformat = string.format
+local srep = string.rep
 
 local StringUtils = {}
 Utils.string = StringUtils
@@ -20,4 +21,8 @@ do
         end)
         return id
     end
+end
+
+StringUtils.indent = function (str, length)
+    return string.format("%s%s", srep(" ", length), str)
 end

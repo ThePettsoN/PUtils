@@ -56,12 +56,14 @@ TableUtils.dump = function(tbl, indent)
 
 	for k, v in pairs(tbl) do
 		local vType = v and type(v) or "nil"
-		if vType == "string" or vType == "number" or vType == "nil" or vType == "boolean" then
-			print(stringformat("%s%s: %s", lpad(indent), k, tostring(v)))
+		if vType == "string" or vType == "number" or vType == "nil" or vType == "boolean" or vType == "function" then
+			Utils.string.printf("%s: %s", Utils.string.indent(k, indent), tostring(v))
 		elseif vType == "userdata" then
-			print(stringformat("%s%s: userdata", lpad(indent), k))
+			Utils.string.printf("%s: userdata", Utils.string.indent(k, indent))
 		elseif vType == "table" then
-			TableDump(v, indent + 4)
+			Utils.string.printf("%s: {", Utils.string.indent(k, indent))
+			TableUtils.dump(v, indent + 4)
+			Utils.string.printf("%s", Utils.string.indent("}", indent))
 		end
 	end
 end
