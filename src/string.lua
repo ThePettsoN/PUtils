@@ -17,7 +17,7 @@ do
     StringUtils.uuid = function(template)
         template = template or defaultTemplate
         local id = string.gsub(template, '[x]', function (c)
-            return string.format('%x', random(0, 0xf))
+            return string.format('%x', math.random(0, 0xf))
         end)
         return id
     end
