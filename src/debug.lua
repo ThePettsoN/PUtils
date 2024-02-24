@@ -62,7 +62,7 @@ DebugUtils.getSeverity = function(self, severity)
 end
 
 DebugUtils.debug = function(self, s, ...)
-    if self.__putils_debug.severity >= Severities.Debug then
+    if self.__putils_debug.severity <= Severities.Debug then
         printMessage(Modules[self], "00ffffff", "DEBUG", s, ...)
     end
 end
