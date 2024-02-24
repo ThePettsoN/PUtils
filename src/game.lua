@@ -42,15 +42,7 @@ do
 			determineVersion()
 		end
 
-		if index < gameVersionIndex then
-			return -1
-		end
-
-		if index == gameVersionIndex then
-			return 0
-		end
-
-		return 1
+		return index == gameVersionIndex
 	end
 end
 
