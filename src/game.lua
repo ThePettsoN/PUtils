@@ -81,11 +81,11 @@ do
 			determineExpansion()
 		end
 
-		if index < gameExpansion then
+		if index < gameExpansionIndex then
 			return -1
 		end
 
-		if index == gameExpansion then
+		if index == gameExpansionIndex then
 			return 0
 		end
 
