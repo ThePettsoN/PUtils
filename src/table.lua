@@ -67,3 +67,17 @@ TableUtils.dump = function(tbl, indent)
 		end
 	end
 end
+
+TableUtils.clone = function(tbl, out)
+	out = out or {}
+
+	for k, v in pairs(tbl) do
+		if type(v) ~= "table" then
+			out[k] = v
+		else
+			out[k] = TableUtils.clone(v)
+		end
+	end
+
+	return out
+end
