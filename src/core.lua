@@ -1,5 +1,7 @@
 local _, PUtils = ...
-PUtils.MAJOR_VERSION = "PUtils-1.0"
-PUtils.MINOR_VERSION = 1
 
-local Utils = LibStub and LibStub:NewLibrary(PUtils.MAJOR_VERSION, PUtils.MINOR_VERSION)
+local MAJOR = 1
+local MINOR = 2
+Putils.PATCH = string.format("PUtils-%d-%d", MAJOR, MINOR)
+
+local Utils = LibStub and LibStub:NewLibrary(Putils.PATCH, MINOR)
