@@ -13,6 +13,7 @@ do
 		Hardcore = 2,
 		Retail = 3,
 		Wotlk = 4,
+		Cataclysm = 5,
 	})
 
 	local function determineVersion()
@@ -54,6 +55,7 @@ do
 		Vanilla = 1,
 		Tbc = 2,
 		Wotlk = 3,
+		Cataclysm = 4,
 	})
 
 	local function determineExpansion()

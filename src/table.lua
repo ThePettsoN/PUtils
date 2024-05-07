@@ -81,3 +81,25 @@ TableUtils.clone = function(tbl, out)
 
 	return out
 end
+
+TableUtils.keys = function(tbl, out)
+	out = out or {}
+	local i = 1
+	for k, v in pairs(tbl) do
+		out[i] = k
+		i = i + 1
+	end
+
+	return out, i
+end
+
+TableUtils.values = function(tbl, out)
+	out = out or {}
+	local i = 1
+	for k, v in pairs(tbl) do
+		out[i] = v
+		i = i + 1
+	end
+
+	return out, i
+end
