@@ -9,22 +9,30 @@ do
 	local gameVersionIndex
 
 	GameUtils.GameVersionLookup = Utils.table.createLookup({
-		SeasonOfDiscovery = 1,
-		Hardcore = 2,
-		Retail = 3,
-		Wotlk = 4,
-		Cataclysm = 5,
+		Vanilla = 1,
+		SeasonOfDiscovery = 2,
+		Hardcore = 3,
+		TBC = 4,
+		Wotlk = 5,
+		Cataclysm = 6,
+		Retail = 7,
 	})
 
 	local function determineVersion()
-		if not C_Engraving then
+		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 			gameVersionIndex = GameUtils.GameVersionLookup.Retail
-		elseif C_Console then
+		elseif WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
+			gameVersionIndex = GameUtils.GameVersionLookup.TBC
+		elseif WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
 			gameVersionIndex = GameUtils.GameVersionLookup.Wotlk
+		elseif WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC then
+			gameVersionIndex = GameUtils.GameVersionLookup.Cataclysm
+		elseif C_Engraving then
+			gameVersionIndex = GameUtils.GameVersionLookup.SeasonOfDiscovery
 		elseif C_GameRules.IsHardcoreActive() then
 			gameVersionIndex = GameUtils.GameVersionLookup.Hardcore
 		else
-			gameVersionIndex = GameUtils.GameVersionLookup.SeasonOfDiscovery
+			gameVersionIndex = GameUtils.GameVersionLookup.Vanilla
 		end
 
 		gameVersion = GameUtils.GameVersionLookup[gameVersionIndex]
@@ -119,4 +127,16 @@ GameUtils.ShapeshiftIds = {
 	Shaman = {
 		GhostWolf = 1,
 	},
+}
+
+GameUtils.ItemRarity = {
+	Poor = 0,
+	Common = 1,
+	Uncommon = 2,
+	Rare = 3,
+	Epic = 4,
+	Legendary = 5,
+	Artifact = 6,
+	Heirloom = 7,
+	Token = 8,
 }
