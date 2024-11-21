@@ -1,5 +1,8 @@
 local _, PUtils = ...
 local Utils = LibStub:GetLibrary(PUtils.PATCH)
+if Utils.table then
+    return
+end
 
 -- WoW APIs
 local CopyTable = CopyTable
@@ -85,7 +88,7 @@ end
 TableUtils.keys = function(tbl, out)
 	out = out or {}
 	local i = 1
-	for k, v in pairs(tbl) do
+	for k, _ in pairs(tbl) do
 		out[i] = k
 		i = i + 1
 	end
@@ -96,7 +99,7 @@ end
 TableUtils.values = function(tbl, out)
 	out = out or {}
 	local i = 1
-	for k, v in pairs(tbl) do
+	for _, v in pairs(tbl) do
 		out[i] = v
 		i = i + 1
 	end

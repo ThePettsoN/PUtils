@@ -1,5 +1,8 @@
 local _, PUtils = ...
 local Utils = LibStub:GetLibrary(PUtils.PATCH)
+if Utils.game then
+    return
+end
 
 local GameUtils = {}
 Utils.game = GameUtils
@@ -68,7 +71,7 @@ do
 
 	local function determineExpansion()
 		local expansion = GetBuildInfo():sub(1,1)
-		
+
 		gameExpansionIndex = tonumber(expansion)
 		gameExpansion = GameUtils.GameExpansionLookup[gameExpansionIndex]
 		if not gameExpansion and gameExpansionIndex >= 10 then

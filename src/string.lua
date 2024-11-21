@@ -1,5 +1,8 @@
 local _, PUtils = ...
 local Utils = LibStub:GetLibrary(PUtils.PATCH)
+if Utils.string then
+    return
+end
 
 -- Lua APIs
 local stringformat = string.format
