@@ -1,14 +1,12 @@
 local _, PUtils = ...
-local Utils = LibStub:GetLibrary(PUtils.PATCH)
-if Utils.table then
+
+local Lib =  PUtils.Library
+if not Lib then
     return
 end
 
--- WoW APIs
-local CopyTable = CopyTable
-
 local TableUtils = {}
-Utils.table = TableUtils
+Lib.Table = TableUtils
 
 TableUtils.mergeArray = function(dest, source)
 	for i = 1, #source do

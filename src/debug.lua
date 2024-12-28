@@ -1,6 +1,7 @@
 local _, PUtils = ...
-local Utils = LibStub:GetLibrary(PUtils.PATCH)
-if Utils.debug then
+
+local Lib = PUtils.Library
+if not Lib then
     return
 end
 
@@ -8,15 +9,18 @@ end
 local stringformat = string.format
 
 local DebugUtils = {}
-Utils.debug = DebugUtils
+Lib.Debug = DebugUtils
+
+local StringUtils = Lib.String
+local TableUtils = Lib.Table
 
 local Modules = {}
-local Severities = {
+local Severities = TableUtils.createLookup({
     Debug = 1,
     Info = 2,
     Warning = 3,
     Error = 4,
-}
+})
 DebugUtils.Severities = Severities
 
 local function charCodeAt(str)
@@ -62,7 +66,7 @@ local function linkFunctions(module)
     module.Warning = DebugUtils.warning
     module.Error = DebugUtils.error
 
-    module.printf = function(_, string, ...) Utils.string.printf(string, ...) end
+    module.printf = function(_, string, ...) StringUtils.printf(string, ...) end
     module.setSeverity = DebugUtils.setSeverity
     module.getSeverity = DebugUtils.getSeverity
 end
@@ -82,7 +86,7 @@ do
         Modules[name] = mod
         Modules[mod] = name
         mod.__putils_debug = {
-            severity = severity and Severities[severity] or Severities.Info,
+            severity = severity and Severities[severity] or Severities.Warning,
             color = color or getColorCode(name)
         }
 
@@ -107,6 +111,16 @@ do
 end
 
 DebugUtils.setSeverity = function(self, severity)
+    local severityType = type(severity)
+    if severityType == "number" and Severities[severity] then
+        self.__putils_debug.severity = severity
+        return
+    end
+
+    if severityType ~= "string" then
+        return
+    end
+
     local newSeverity = Severities[severity]
     if not newSeverity then
         return
