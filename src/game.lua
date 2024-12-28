@@ -98,7 +98,7 @@ local function determineGameData()
 
 	maxLevel = GetMaxLevelForExpansionLevel(gameVersionIndex)
 
-	className, classIndex = UnitClass("player")
+	className, classIndex = UnitClassBase("player")
 end
 determineGameData()
 
