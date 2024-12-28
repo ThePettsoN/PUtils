@@ -2,8 +2,7 @@
 ..\FrameXML\UI.xsd">
 	<Script file="src/core.lua"/>
 	<Script file="src/table.lua"/>
+	<Script file="src/string.lua"/>
 	<Script file="src/debug.lua"/>
 	<Script file="src/game.lua"/>
-	<Script file="src/string.lua"/>
-	<Script file="src/table.lua"/>
 </Ui>
