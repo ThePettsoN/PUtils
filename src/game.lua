@@ -11,78 +11,8 @@ Lib.Game = GameUtils
 -- Lua APIs
 local strlower = strlower
 
-local TableUtils = PUtils.Library.Table
+local LookupUtils = PUtils.Library.Lookups
 local StringUtils = PUtils.Library.String
-
-local GameVersionLookup = TableUtils.createLookup({
-	CLASSIC = LE_EXPANSION_CLASSIC,
-	TBC = LE_EXPANSION_BURNING_CRUSADE,
-	WOTLK = LE_EXPANSION_WRATH_OF_THE_LICH_KING,
-	CATACLYSM = LE_EXPANSION_CATACLYSM,
-	MOP = LE_EXPANSION_MISTS_OF_PANDARIA,
-	WOD = LE_EXPANSION_WARLORDS_OF_DRAENOR,
-	LEGION = LE_EXPANSION_LEGION,
-	BFA = LE_EXPANSION_BATTLE_FOR_AZEROTH,
-	SHADOWLANDS = LE_EXPANSION_SHADOWLANDS,
-	DRAGONFLIGHT = LE_EXPANSION_DRAGONFLIGHT,
-	TWW = LE_EXPANSION_WAR_WITHIN,
-})
-
-local SeasonLookup = TableUtils.createLookup({
-	NoSeason = 0,
-	SeasonOfMastery = 1,
-	SeasonOfDiscovery = 2,
-	Hardcore = 3,
-	Fresh = 4,
-	FreshHardcore = 12,
-})
-
-local ClassIdLookup = TableUtils.createLookup({
-	NONE = 0,
-	WARRIOR = 1,
-	PALADIN = 2,
-	HUNTER = 3,
-	ROGUE = 4,
-	PRIEST = 5,
-	DEATHKNIGHT = 6,
-	SHAMAN = 7,
-	MAGE = 8,
-	WARLOCK = 9,
-	MONK = 10,
-	DRUID = 11,
-	DEMONHUNTER = 12,
-	EVOKER = 13,
-})
-
-local ShapeshiftIdLookup = {
-	DRUID = TableUtils.createLookup({
-		AQUATIC_FORM = 2,
-		TRAVEL_FORM = 4,
-		FLIGHT_FORM = 5,
-		FLIGHT_FORM_BALANCE = 6
-	}),
-	SHAMAN = TableUtils.createLookup({
-		GHOST_WOLF = 1,
-	}),
-}
-
-local ItemRarityLookup = TableUtils.createLookup({
-	POOR = 0,
-	COMMON = 1,
-	UNCOMMON = 2,
-	RARE = 3,
-	EPIC = 4,
-	LEGENDARY = 5,
-	ARTIFACT = 6,
-	HEIRLOOM = 7,
-	TOKEN = 8,
-})
-
-GameUtils.GameVersionLookup = GameVersionLookup
-GameUtils.SeasonLookup = SeasonLookup
-GameUtils.ClassIdLookup = ClassIdLookup
-GameUtils.ShapeshiftIdLookup = ShapeshiftIdLookup
-GameUtils.ItemRarityLookup = ItemRarityLookup
 
 local classIndex, className
 local gameVersionIndex, gameVersion
@@ -91,19 +21,17 @@ local maxLevel
 
 local function determineGameData()
 	gameVersionIndex = LE_EXPANSION_LEVEL_CURRENT
-	gameVersion = GameVersionLookup[gameVersionIndex]
+	gameVersion = LookupUtils.GameVersion[gameVersionIndex]
 
 	seasonIndex = C_Seasons and C_Seasons.GetActiveSeason() or 0
-	season = SeasonLookup[seasonIndex]
+	season = LookupUtils.Season[seasonIndex]
 
 	maxLevel = GetMaxLevelForExpansionLevel(gameVersionIndex)
-
-	className, classIndex = UnitClassBase("player")
 end
 determineGameData()
 
 GameUtils.GetGameVersion = function()
-	return gameVersion, GameVersionLookup[gameVersion]
+	return gameVersion, LookupUtils.GameVersion[gameVersion]
 end
 GameUtils.CompareGameVersion = function(value)
 	local valueType = type(value)
@@ -112,30 +40,34 @@ GameUtils.CompareGameVersion = function(value)
 	end
 
 	if valueType == "string" then
-		return GameVersionLookup[value] <= gameVersionIndex
+		return LookupUtils.GameVersion[value] <= gameVersionIndex
 	end
 
-	error("Invalid value type", value, valueType)
+	error(string.format("Invalid value type: %s (%s)", tostring(value), valueType))
 end
 GameUtils.GetSeason = function()
-	return season, SeasonLookup[season]
+	return season, LookupUtils.Season[season]
 end
-GameUtils.CompareSeasion = function(value)
+GameUtils.CompareSeason = function(value)
 	local valueType = type(value)
 	if valueType == "number" then
 		return value <= seasonIndex
 	end
 
 	if valueType == "string" then
-		return SeasonLookup[value] <= seasonIndex
+		return LookupUtils.Season[value] <= seasonIndex
 	end
 
-	error("Invalid value type")
+	error(string.format("Invalid value type"))
 end
 GameUtils.GetMaxLevel = function()
 	return maxLevel
 end
 GameUtils.GetPlayerClass = function()
+	if not className then
+		className, classIndex = UnitClassBase("player")
+	end
+
 	return className, classIndex
 end
 GameUtils.ComparePlayerClass = function (value)
@@ -148,12 +80,30 @@ GameUtils.ComparePlayerClass = function (value)
 		return value == className
 	end
 
-	error("Invalid value type", value, valueType)
+	error(string.format("Invalid value type: %s (%s)", tostring(value), valueType))
+end
+
+GameUtils.IterateGroupMembers = function()
+	local unit = IsInRaid() and 'raid' or 'party'
+	local numGroupMembers = unit == 'party' and GetNumSubgroupMembers() or GetNumGroupMembers()
+	local i = unit == 'party' and 0 or 1
+
+	return function()
+		local ret
+		if i == 0 and unit == 'party' then
+			ret = 'player'
+		elseif i <= numGroupMembers and i > 0 then
+			ret = unit .. i
+		end
+		i = i + 1
+
+		return ret
+	end
 end
 
 -- Generates functions to quickly check if player is on a specific expansion
 -- eg. IsClassic(), IsWotlk()
-for k, v in pairs(GameVersionLookup) do
+for k, v in pairs(LookupUtils.GameVersion) do
 	if type(k) == "string" then
 		local gameVersionName = StringUtils.capitalize(strlower(k))
 		GameUtils["Is" .. gameVersionName] = function()
@@ -164,7 +114,7 @@ end
 
 -- Generates functions to quickly check if player is on a specific expansion
 -- eg. IsHardcore(), IsSeasonOfDiscovery()
-for k, v in pairs(SeasonLookup) do
+for k, v in pairs(LookupUtils.Season) do
 	if type(k) == "string" then
 		GameUtils["Is" .. k] = function()
 			return v == seasonIndex
