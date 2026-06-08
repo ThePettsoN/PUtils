@@ -16,14 +16,13 @@ StringUtils.printf = function(s, ...)
     print(stringformat(s, ...))
 end
 
-local defaultTemplate ='xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+local defaultTemplate = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
 StringUtils.uuid = function(template)
     template = template or defaultTemplate
-    local id = string.gsub(template, '[x]', function (c)
-        return string.format('%x', math.random(0, 0xf))
+    return string.gsub(template, "[xy]", function(c)
+        local v = (c == "x") and math.random(0, 15) or math.random(8, 11)
+        return string.format("%x", v)
     end)
-
-    return id
 end
 
 StringUtils.indent = function (str, length)

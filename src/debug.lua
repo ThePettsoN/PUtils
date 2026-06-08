@@ -31,12 +31,12 @@ local function getColorCode(str)
     local hash = 0
     for i = 1, #str do
         local char = str:sub(i, i)
-        hash = charCodeAt(char, 0) + bit.lshift(hash, 5) - hash
+        hash = charCodeAt(char) + bit.lshift(hash, 5) - hash
     end
 
     local color = "00"
     for i = 1, 3 do
-        local value = bit.band(bit.rshift(hash, i * 8), 255)
+        local value = bit.band(bit.rshift(hash, (i - 1) * 8), 255)
         value = stringformat("%x", value)
         local n = #value
         if n < 2 then

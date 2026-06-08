@@ -8,6 +8,8 @@ end
 local TableUtils = {}
 Lib.Table = TableUtils
 
+local StringUtils = Lib.String
+
 TableUtils.mergeArray = function(dest, source)
 	for i = 1, #source do
 		dest[#dest + 1] = source[i]
@@ -16,11 +18,15 @@ TableUtils.mergeArray = function(dest, source)
 	return dest
 end
 
+TableUtils.isArray = function(tbl)
+    return #tbl > 0
+end
+
 TableUtils.mergeRecursive = function(dest, source)
 	for k, v in pairs(source) do
 		local isTable = type(v) == "table"
 
-		if isTable and v[1] and type(dest[k]) == "table" and dest[k][1] then -- Stupid check that assumes that all tables where index 1 exists in both dest and source are arrays.
+		if isTable and TableUtils.isArray(v) and TableUtils.isArray(dest[k]) then
 			TableUtils.mergeArray(dest[k], v)
 		elseif isTable and type(dest[k]) == "table" then
 			TableUtils.mergeRecursive(dest[k], v)
@@ -45,8 +51,10 @@ end
 TableUtils.createLookup = function(tbl, out)
 	out = out or {}
 	for k, v in pairs(tbl) do
-		out[k] = v
-		out[v] = k
+		if k then
+			out[k] = v
+			out[v] = k
+		end
 	end
 
 	return out
@@ -58,13 +66,13 @@ TableUtils.dump = function(tbl, indent)
 	for k, v in pairs(tbl) do
 		local vType = v and type(v) or "nil"
 		if vType == "string" or vType == "number" or vType == "nil" or vType == "boolean" or vType == "function" then
-			Utils.string.printf("%s: %s", Utils.string.indent(k, indent), tostring(v))
+			StringUtils.printf("%s: %s", StringUtils.indent(k, indent), tostring(v))
 		elseif vType == "userdata" then
-			Utils.string.printf("%s: userdata", Utils.string.indent(k, indent))
+			StringUtils.printf("%s: userdata", StringUtils.indent(k, indent))
 		elseif vType == "table" then
-			Utils.string.printf("%s: {", Utils.string.indent(k, indent))
+			StringUtils.printf("%s: {", StringUtils.indent(k, indent))
 			TableUtils.dump(v, indent + 4)
-			Utils.string.printf("%s", Utils.string.indent("}", indent))
+			StringUtils.printf("%s", StringUtils.indent("}", indent))
 		end
 	end
 end
@@ -91,7 +99,7 @@ TableUtils.keys = function(tbl, out)
 		i = i + 1
 	end
 
-	return out, i
+	return out, i - 1
 end
 
 TableUtils.values = function(tbl, out)
@@ -102,5 +110,5 @@ TableUtils.values = function(tbl, out)
 		i = i + 1
 	end
 
-	return out, i
+	return out, i - 1
 end
